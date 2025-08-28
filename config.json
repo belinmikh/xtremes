@@ -1,0 +1,4 @@
+{
+  "log_level": "DEBUG",
+  "redis_host": "redis"
+}
