@@ -49,4 +49,4 @@ async def update(hours_period: float, db: IDatabase, file_schema: IFileSchema, u
                 include = ["содерж", "изобр", "начин"]
             file_schema.read_from(filename, include)
             await db.fill(file_schema.data)
-        await asyncio.sleep(hours_period)
+        await asyncio.sleep(hours_period * 60 * 60)
