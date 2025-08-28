@@ -34,7 +34,7 @@ def save_file(url: str, filename: str) -> bool:
 
 async def update(hours_period: float, db: IDatabase, file_schema: IFileSchema, url: str, filename: str):
     while True:
-        if not os.path.exists(filename) or time.time() - os.path.getctime(filename) > hours_period * 60 * 24:
+        if not os.path.exists(filename) or time.time() - os.path.getctime(filename) > hours_period * 60 * 60:
             logging.info(f"Saving {filename}...")
             updated = save_file(url, filename)
         else:
