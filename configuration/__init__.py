@@ -15,7 +15,7 @@ class Config(JsonConfig):
     file_encoding = Field(str, default="Windows-1251")
     file_delimiter = Field(str, default=";")
 
-    check_period = Field(float, default=20)
-    expiration_period = Field(float, default=60)
+    check_period = Field(float, default=1 * 60 * 60)
+    expiration_period = Field(float, default=24 * 60 * 60)
 
     keywords_file = Field(str, default="keywords.json")
