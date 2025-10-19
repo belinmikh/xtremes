@@ -27,7 +27,7 @@ class RedisDB(IDatabase):
                 for i in range(len(data))
             )
         )
-        self.__size = len(data)
+        self.__size = await self.__rds.dbsize()
         self.__lock = False
 
     async def rnd(self):
@@ -36,5 +36,9 @@ class RedisDB(IDatabase):
         if not self.__size:
             self.__size = await self.__rds.dbsize()
         if not self.__size:
-            raise UnfilledDatabaseException("Redis is empty! Have you called RedisDB.fill?")
+            raise UnfilledDatabaseException("Redis is empty! Ensure calling RedisDB.fill")
         return await self.__rds.get(bytes(randint(0, self.__size - 1)))
+
+    @property
+    def size(self) -> int:
+        return self.__size

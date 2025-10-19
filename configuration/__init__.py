@@ -4,7 +4,7 @@ from configuration.descriptors import Field
 
 class Config(JsonConfig):
     log_filename = Field(str, default="data/xtremes.log")
-    log_level = Field(str, default="INFO")
+    log_level = Field(str, default="DEBUG")
 
     redis_host = Field(str, default="localhost")
     redis_port = Field(int, default=6379)
@@ -14,6 +14,8 @@ class Config(JsonConfig):
     file_column = Field(str, default="Материал")
     file_encoding = Field(str, default="Windows-1251")
     file_delimiter = Field(str, default=";")
-    file_updating_hours = Field(int, default=24)
+
+    check_period = Field(float, default=20)
+    expiration_period = Field(float, default=60)
 
     keywords_file = Field(str, default="keywords.json")

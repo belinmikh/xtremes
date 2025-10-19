@@ -1,4 +1,5 @@
 import csv
+import logging
 from typing import Type, Iterable
 
 from aiofile import async_open, AIOFile
@@ -34,14 +35,7 @@ class FileSchema(IFileSchema):
                 ),
                 include
             )
-        # async with AIOFile(filename, "r", self.__encoding) as afp:
-        #     self.__data = _imat_type(
-        #         (
-        #             item.get(self.__data_column, "")
-        #             async for item in AsyncDictReader(afp)
-        #         ),
-        #         include
-        #     )
+
 
     @property
     def data(self) -> IMaterials:

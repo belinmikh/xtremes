@@ -26,7 +26,7 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--config", default="config.json", help="*.json configuration filename")
+parser.add_argument("--config", default="config.json", help="*.json keywords list configuration filename")
 
 args = parser.parse_args()
 config = Config(args.config)
@@ -60,7 +60,7 @@ async def cmd_handler(message: Message):
     await asyncio.sleep(0.5)
     await message.answer(
         'Источник: '
-        '<a href="https://minjust.gov.ru/ru/extremist-materials/">'
+        f'<a href="{config.file_url}">'
         'Экстремистские материалы'
         '</a>',
         reply_markup=kb,
@@ -84,7 +84,8 @@ async def main():
     try:
         await asyncio.gather(
             update(
-                config.file_updating_hours,
+                config.check_period,
+                config.expiration_period,
                 redis_db,
                 file_schema,
                 config.file_url,
@@ -99,5 +100,8 @@ async def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(format="%(asctime)s [%(process)d | %(thread)d] %(funcName)s ---> %(message)s", level=config.log_level)
+    logging.basicConfig(
+        format="%(asctime)s [%(levelname)s: %(process)d | %(thread)d] %(module)s: %(funcName)s ---> %(message)s",
+        level=config.log_level
+    )
     asyncio.run(main())

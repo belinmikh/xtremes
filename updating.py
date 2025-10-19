@@ -10,6 +10,8 @@ import requests
 from database.interfaces import IDatabase
 from datafile.interfaces import IFileSchema
 
+DEFAULT_KEYWORDS = ["содерж", "изобр", "начин"]
+
 
 def save_file(url: str, filename: str) -> bool:
     # I failed to do that async for some reason
@@ -32,21 +34,32 @@ def save_file(url: str, filename: str) -> bool:
     return False
 
 
-async def update(hours_period: float, db: IDatabase, file_schema: IFileSchema, url: str, filename: str):
+async def update(
+        check_period: int, expiration_period: int,
+        db: IDatabase, file_schema: IFileSchema,
+        url: str, filename: str
+) -> None:
     while True:
-        if not os.path.exists(filename) or time.time() - os.path.getctime(filename) > hours_period * 60 * 60:
+        logging.debug("Initializing periodic update...")
+        if not os.path.exists(filename) or time.time() - os.path.getctime(filename) > expiration_period:
             logging.info(f"Saving {filename}...")
             updated = save_file(url, filename)
         else:
             logging.info(f"{filename} is up to date")
-            updated = True
+            updated = False
         if updated:
             try:
                 with open("keywords.json", "r", encoding="utf-8") as file:
                     include = json.load(file)
             except RuntimeError:
-                logging.warn("Missing / broken keywords.json")
-                include = ["содерж", "изобр", "начин"]
-            file_schema.read_from(filename, include)
-            await db.fill(file_schema.data)
-        await asyncio.sleep(hours_period * 60 * 60)
+                logging.warn("Missing / broken keywords.json, using default")
+                include = DEFAULT_KEYWORDS
+
+            try:
+                file_schema.read_from(filename, include)
+                previous_db_rows = db.size
+                await db.fill(file_schema.data)
+                logging.info(f"{previous_db_rows} -> {db.size} rows ({(db.size - previous_db_rows):+})")
+            except RuntimeError as ex:
+                logging.warn(f"Failed to update data! {ex}")
+        await asyncio.sleep(check_period)

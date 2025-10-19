@@ -9,3 +9,7 @@ class IDatabase(ABC):
 
     @abstractmethod
     async def rnd(self): ...
+
+    @property
+    @abstractmethod
+    def size(self) -> int: ...
