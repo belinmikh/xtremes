@@ -9,7 +9,9 @@ class Field[T]:
     __dft: T | _NotSet
     __opt: bool
 
-    def __init__(self, _t: Type[T], *, default: T | _NotSet = _NotSet(), optional: bool = False):
+    def __init__(
+        self, _t: Type[T], *, default: T | _NotSet = _NotSet(), optional: bool = False
+    ):
         self.__type = _t
         self.__dft = default
         self.__opt = optional
@@ -26,7 +28,9 @@ class Field[T]:
             try:
                 value = self.__type(value)
             except Exception as ex:
-                raise TypeError(f"Can't change {type(value)} to {self.__type} in {self.__attr_name} field") from ex
+                raise TypeError(
+                    f"Can't change {type(value)} to {self.__type} in {self.__attr_name} field"
+                ) from ex
         instance.__dict__[self.__attr_name] = value
 
     def __get__(self, instance, owner) -> T:

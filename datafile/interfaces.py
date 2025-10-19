@@ -15,7 +15,12 @@ class IMaterials(ABC):
 
 class IFileSchema(ABC):
     @abstractmethod
-    def read_from(self, filename: str, include: Iterable[str], _imat_type: Type[IMaterials] | None = None) -> None: ...
+    def read_from(
+        self,
+        filename: str,
+        include: Iterable[str],
+        _imat_type: Type[IMaterials] | None = None,
+    ) -> None: ...
 
     @property
     @abstractmethod

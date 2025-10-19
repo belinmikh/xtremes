@@ -22,10 +22,7 @@ class RedisDB(IDatabase):
         self.__lock = True
         await self.__rds.flushdb()
         await asyncio.gather(
-            *(
-                self.__rds.set(bytes(i), data[i])
-                for i in range(len(data))
-            )
+            *(self.__rds.set(bytes(i), data[i]) for i in range(len(data)))
         )
         self.__size = await self.__rds.dbsize()
         self.__lock = False
@@ -36,7 +33,9 @@ class RedisDB(IDatabase):
         if not self.__size:
             self.__size = await self.__rds.dbsize()
         if not self.__size:
-            raise UnfilledDatabaseException("Redis is empty! Ensure calling RedisDB.fill")
+            raise UnfilledDatabaseException(
+                "Redis is empty! Ensure calling RedisDB.fill"
+            )
         return await self.__rds.get(bytes(randint(0, self.__size - 1)))
 
     @property

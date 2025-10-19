@@ -26,21 +26,19 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--config", default="config.json", help="*.json keywords list configuration filename")
+parser.add_argument(
+    "--config",
+    default="config.json",
+    help="*.json keywords list configuration filename",
+)
 
 args = parser.parse_args()
 config = Config(args.config)
 
 file_schema = FileSchema(
-    config.file_column,
-    config.file_delimiter,
-    config.file_encoding
+    config.file_column, config.file_delimiter, config.file_encoding
 )
-redis_db = RedisDB(
-    config.redis_host,
-    config.redis_port,
-    config.redis_db
-)
+redis_db = RedisDB(config.redis_host, config.redis_port, config.redis_db)
 
 
 @dp.message(Command(commands=["start", "help"]))
@@ -52,17 +50,14 @@ async def cmd_handler(message: Message):
     await message.answer("Поэтому я тебе помогу случайно его не нарушить")
     await asyncio.sleep(1)
     await message.answer(
-        f"Просто нажми кнопку \"{BTN_TEXT}\", "
+        f'Просто нажми кнопку "{BTN_TEXT}", '
         "и я тебе пришлю случайные сведения, "
         "которые ни в коем случае нельзя искать в интернете... "
         "да и вообще нигде!"
     )
     await asyncio.sleep(0.5)
     await message.answer(
-        'Источник: '
-        f'<a href="{config.file_url}">'
-        'Экстремистские материалы'
-        '</a>',
+        "Источник: " f'<a href="{config.file_url}">' "Экстремистские материалы" "</a>",
         reply_markup=kb,
         parse_mode="HTML",
     )
@@ -89,9 +84,9 @@ async def main():
                 redis_db,
                 file_schema,
                 config.file_url,
-                CSV_FILENAME
+                CSV_FILENAME,
             ),
-            dp.start_polling(bot)
+            dp.start_polling(bot),
         )
     except KeyboardInterrupt:
         logging.info("Stopped by user")
@@ -102,6 +97,6 @@ async def main():
 if __name__ == "__main__":
     logging.basicConfig(
         format="%(asctime)s [%(levelname)s: %(process)d | %(thread)d] %(module)s: %(funcName)s ---> %(message)s",
-        level=config.log_level
+        level=config.log_level,
     )
     asyncio.run(main())
